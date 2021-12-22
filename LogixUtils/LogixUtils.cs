@@ -47,7 +47,12 @@ namespace LogixUtils
                 targetSlot.GlobalScale = targetSlot.World.LocalUserGlobalScale;
             }
         }
-        [HarmonyPatch(typeof(ComponentBase<Component>), "OnAttach")] // ;-;
+        /*
+         * ;-; 
+         * I would prefer to patch LogixTip.OnGrabbing but I don't want to do IL code rn
+         * I will eventually tho
+         */
+        [HarmonyPatch(typeof(ComponentBase<Component>), "OnAttach")]
         class ComponentAttach_Patch
         {
             public static void Postfix(Component __instance)
@@ -61,4 +66,3 @@ namespace LogixUtils
         //[HarmonyPatch(typeof(Slot), nameof(Slot.AttachComponent<ImpulseRelay>)] // how do I patch generic methods?
     }
 }
-
