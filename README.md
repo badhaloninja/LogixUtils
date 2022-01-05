@@ -2,7 +2,9 @@
 
 A [NeosModLoader](https://github.com/zkxs/NeosModLoader) mod for [Neos VR](https://neos.com/) that tweaks some logix things
 
-Currently only scales relays, drives, casts, and ref nodes relative to user
+### Current features: 
+ - Scales relays, drives, casts, and reference nodes relative to user
+ - Updates `LogixHelper.GetNodeName` to display generic type names nicer
 
 ## Installation
 1. Install [NeosModLoader](https://github.com/zkxs/NeosModLoader).
