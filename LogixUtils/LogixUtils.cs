@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Linq;
-using System.Text;
 
 namespace LogixUtils
 {
@@ -17,7 +16,7 @@ namespace LogixUtils
     {
         public override string Name => "LogixUtils";
         public override string Author => "badhaloninja";
-        public override string Version => "1.1.0";
+        public override string Version => "1.2.0";
         public override string Link => "https://github.com/badhaloninja/LogixUtils";
         public override void OnEngineInit()
         {
