@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Linq;
+using System.Text;
 
 namespace LogixUtils
 {
@@ -89,6 +91,30 @@ namespace LogixUtils
                     code.InsertRange(insertionIndex, instructionsToInsert);
                 }
                 return code;
+            }
+        }
+        
+        [HarmonyPatch(typeof(LogixHelper), "GetNodeName")]
+        class getNodeNamePatch
+        {
+            public static bool Prefix(Type nodeType, ref string __result)
+            {
+                NodeName nodeName = nodeType.GetCustomAttributes(typeof(NodeName), false).Cast<NodeName>().FirstOrDefault<NodeName>();
+                if ((__result = ((nodeName != null) ? nodeName.Name : null)) == null)
+                {
+                    __result = (StringHelper.BeautifyName(LogixHelper.GetOverloadName(nodeType)) ?? GetFormattedName(nodeType));
+                }
+                return false;
+            }
+
+            public static string GetFormattedName(Type type)
+            {
+                if (type.IsConstructedGenericType)
+                {
+                    string genericArguments = string.Join(",",type.GetGenericArguments().Select(GetFormattedName));
+                    return $"{StringHelper.BeautifyName(type.Name.Substring(0, type.Name.IndexOf("`")))}<{genericArguments}>";
+                }
+                return StringHelper.BeautifyName(type.Name);
             }
         }
     }
