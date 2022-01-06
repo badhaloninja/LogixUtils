@@ -16,7 +16,7 @@ namespace LogixUtils
     {
         public override string Name => "LogixUtils";
         public override string Author => "badhaloninja";
-        public override string Version => "1.2.0";
+        public override string Version => "1.3.0";
         public override string Link => "https://github.com/badhaloninja/LogixUtils";
         public override void OnEngineInit()
         {
@@ -114,6 +114,19 @@ namespace LogixUtils
                     return $"{StringHelper.BeautifyName(type.Name.Substring(0, type.Name.IndexOf("`")))}<{genericArguments}>";
                 }
                 return StringHelper.BeautifyName(type.Name);
+            }
+        }
+        
+        
+        [HarmonyPatch(typeof(UI_TargettingController), "AlignItem")]
+        class UIAlign_Patch
+        {
+            public static void Postfix(UI_TargettingController __instance, Slot root, ref floatQ orientation)
+            {
+                if (MathX.Dot(root.Forward, __instance.ViewRotation * float3.Forward) < 0f)
+                {
+                    orientation = orientation.Inverted;
+                }
             }
         }
     }
