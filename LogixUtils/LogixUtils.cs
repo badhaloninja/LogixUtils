@@ -16,7 +16,7 @@ namespace LogixUtils
     {
         public override string Name => "LogixUtils";
         public override string Author => "badhaloninja";
-        public override string Version => "1.3.0";
+        public override string Version => "1.3.1";
         public override string Link => "https://github.com/badhaloninja/LogixUtils";
         public override void OnEngineInit()
         {
@@ -123,9 +123,10 @@ namespace LogixUtils
         {
             public static void Postfix(UI_TargettingController __instance, Slot root, ref floatQ orientation)
             {
-                if (MathX.Dot(root.Forward, __instance.ViewRotation * float3.Forward) < 0f)
+                floatQ globalViewRotation = __instance.ViewSpace.LocalRotationToGlobal(__instance.ViewRotation);
+                if (MathX.Dot(root.Forward, globalViewRotation * float3.Forward) < 0f)
                 {
-                    orientation = orientation.Inverted;
+                    orientation = floatQ.LookRotation(orientation * float3.Backward, orientation * float3.Up);
                 }
             }
         }
