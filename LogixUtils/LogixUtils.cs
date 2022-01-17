@@ -2,6 +2,7 @@ using BaseX;
 using FrooxEngine;
 using FrooxEngine.LogiX;
 using FrooxEngine.LogiX.Cast;
+using FrooxEngine.LogiX.Data;
 using HarmonyLib;
 using NeosModLoader;
 using System;
@@ -16,7 +17,7 @@ namespace LogixUtils
     {
         public override string Name => "LogixUtils";
         public override string Author => "badhaloninja";
-        public override string Version => "1.3.2";
+        public override string Version => "1.4.0";
         public override string Link => "https://github.com/badhaloninja/LogixUtils";
         public override void OnEngineInit()
         {
@@ -24,6 +25,7 @@ namespace LogixUtils
             harmony.PatchAll();
         }
 
+        // Various Scale fixes
         [HarmonyPatch(typeof(LogixTip), "AttachDriver")]
         class LogixTip_AttachDriver_Patch
         {
@@ -52,8 +54,6 @@ namespace LogixUtils
                 targetSlot.GlobalScale = targetSlot.World.LocalUserGlobalScale;
             }
         }
-
-        //IL go brr
         [HarmonyPatch(typeof(LogixTip), "OnGrabbing")]
         class RelayScaleFix
         {
@@ -93,6 +93,8 @@ namespace LogixUtils
             }
         }
         
+
+        // Logix label tweak
         [HarmonyPatch(typeof(LogixHelper), "GetNodeName")]
         class getNodeNamePatch
         {
@@ -147,8 +149,6 @@ namespace LogixUtils
                         __instance.Slot.ActiveUser == null && ___ActiveNodeType.WasLastModifiedBy(__instance.LocalUser)); // if ActiveUser is null AND node type was last modified by LocalUser
                 }*/
 
-
-
                 // ValueCopy version
                 // This works fine, but I don't want to resort to making it local
                 [HarmonyPrefix]
@@ -165,6 +165,7 @@ namespace LogixUtils
         }
         
         
+        // UI align item backwards or forwards
         [HarmonyPatch(typeof(UI_TargettingController), "AlignItem")]
         class UIAlign_Patch
         {
@@ -179,40 +180,138 @@ namespace LogixUtils
         }
 
 
-
-
-
-/*        [HarmonyPatch(typeof(LogixTip))]
-        class debugFunny
+        // Extract Ref Node of any type
+        [HarmonyPatch(typeof(LogixTip), "OnSecondaryPress")]
+        class LogixTip_OnSecondaryPress_Patch
         {
-            [HarmonyPrefix]
-            [HarmonyPatch("OnAttach")]
-            public static void OnAttach(LogixTip __instance)
+            public static bool Prefix(LogixTip __instance, Sync<LogixTip.ExtractMode> ____extract, ref IInputElement ____input, ref Slot ____tempWire)
             {
-                string name = __instance.Slot.ActiveUser.UserName;
-                Msg("OnAttach Triggered, ActiveUser: " + name + ", RefID: " + __instance.ReferenceID);
+                CommonTool activeTool = __instance.ActiveTool;
+
+                //Initial Checks
+                bool isHoldingObject = (activeTool != null && activeTool.Grabber != null && activeTool.Grabber.IsHoldingObjects);
+                if (isHoldingObject)
+                {
+                    if (____extract.Value == LogixTip.ExtractMode.ReferenceNode)
+                    { // Extract ref node of any reference
+                        return handleExtractRefNode(__instance);
+                    }
+                }
+                if (____input != null && ____input.InputType.IsConstructedGenericType)
+                { // Spawn Register inputs for write nodes
+                    LogixNode register = createRegisterInput(__instance, ____input);
+                    if (register != null)
+                    {
+                        ____input.TryConnectTo(register);
+                        if (____input.TargetNode != null) 
+                        { // Offset new ref node
+                            LogixNode refNode = ____input.TargetNode;
+
+                            float3 localPosition = refNode.Slot.LocalPosition;
+                            floatQ localRotation = register.Slot.LocalRotation;
+
+                            float3 direction = localRotation * (register.Slot.LocalScale * float3.Right);
+                            float3 offset = direction * 0.036f; // Output proxy location
+                            refNode.Slot.LocalPosition = localPosition + offset;
+                        }
+                        ____input = null;
+                        Slot tempWire = ____tempWire;
+                        if (tempWire != null)
+                        {
+                            tempWire.Destroy();
+                        }
+                        ____tempWire = null;
+                        return false;
+                    };
+                }
+                return true;
             }
-            [HarmonyPrefix]
-            [HarmonyPatch("OnChanges")]
-            public static void OnChanges(LogixTip __instance)
+
+            private static bool handleExtractRefNode(LogixTip instance)
             {
-                string name = __instance.Slot.ActiveUser.UserName;
-                Msg("OnChanges Triggered, ActiveUser: " + name + ", RefID: " + __instance.ReferenceID);
+                ReferenceProxy referenceProxy;
+                Slot heldSlotReference = GetHeldSlotReference(instance, out referenceProxy);
+
+                // Why is this a thing??? On secondary if you are holding a slot ref named "LogiX_Pack" it will unpack that slot?
+                if (heldSlotReference != null && heldSlotReference.Name == LogixHelper.LOGIX_PACK_NAME) return true;
+
+
+                IWorldElement worldElement = (referenceProxy != null) ? referenceProxy.Reference.Target : null;
+                //if (worldElement as IField != null) return true; // Continue original behavior if it is a field
+
+                Slot nodeSlot = instance.LocalUserSpace.AddSlot("Reference Node");
+
+                //Original functionality 
+                IReferenceNode referenceNode = PrefixReferenceNode(nodeSlot, worldElement, worldElement.GetType());
+
+                if (referenceNode == null) return false;
+
+                PositionSpawnedNode(instance, referenceNode.Slot);
+                Slot display = AttachOutput(instance, referenceNode);
+                if (display != null)
+                {
+                    float3 localPosition = display.LocalPosition;
+                    floatQ localRotation = referenceNode.Slot.LocalRotation;
+
+                    float3 direction = localRotation * (float3.Right + float3.Up);
+                    float3 offset = direction * 0.1f;
+                    display.LocalPosition = localPosition + offset;
+                }
+
+                return false;
             }
-            [HarmonyPrefix]
-            [HarmonyPatch("SetActiveType")]
-            public static void SetActiveType(LogixTip __instance)
+
+            private static LogixNode createRegisterInput(LogixTip logixTip, IInputElement input)
             {
-                string name = __instance.Slot.ActiveUser.UserName;
-                Msg("SetActiveType Triggered, ActiveUser: " + name + ", RefID: " + __instance.ReferenceID);
+                Type baseType = input.InputType.GetGenericTypeDefinition();
+
+                if (baseType != typeof(IValue<>)) return null;
+                Type genericType = input.InputType.GetGenericArguments()[0];
+
+                Type targetGeneric = (Coder.IsNeosPrimitive(genericType)) ? typeof(ValueRegister<>) : typeof(ReferenceRegister<>);
+
+                Type type = targetGeneric.MakeGenericType(new Type[]
+                {
+                    genericType
+                });
+                
+                return (LogixNode)CreateNewNodeSlot(logixTip, LogixHelper.GetNodeName(type)).AttachComponent(type);
             }
-*//*            [HarmonyPrefix]
-            [HarmonyPatch("Update")]
-            public static void Update(LogixTip __instance)
+
+
+
+
+            // Reflections go brrrrrr
+            [HarmonyReversePatch]
+            [HarmonyPatch(typeof(LogixTip), "GetHeldSlotReference")]
+            public static Slot GetHeldSlotReference(LogixTip instance, out ReferenceProxy referenceProxy)
             {
-                string name = __instance.Slot.ActiveUser.UserName;
-                Msg("Update Triggered, ActiveUser: " + name + ", RefID: " + __instance.ReferenceID);
-            }*//*
-        }*/
+                throw new NotImplementedException("It's a stub");
+            }
+            [HarmonyReversePatch]
+            [HarmonyPatch(typeof(LogixTip), "CreateNewNodeSlot")]
+            public static Slot CreateNewNodeSlot(LogixTip instance, string name)
+            {
+                throw new NotImplementedException("It's a stub");
+            }
+            [HarmonyReversePatch]
+            [HarmonyPatch(typeof(LogixTip), "PositionSpawnedNode")]
+            public static void PositionSpawnedNode(LogixTip instance, Slot node)
+            {
+                throw new NotImplementedException("It's a stub");
+            }
+            [HarmonyReversePatch]
+            [HarmonyPatch(typeof(LogixTip), "AttachOutput")]
+            public static Slot AttachOutput(LogixTip instance, IWorldElement output)
+            {
+                throw new NotImplementedException("It's a stub");
+            }
+            [HarmonyReversePatch]
+            [HarmonyPatch(typeof(ReferenceNode), "PrefixReferenceNode")]
+            public static IReferenceNode PrefixReferenceNode(Slot slot, IWorldElement target, Type targetType)
+            {
+                throw new NotImplementedException("It's a stub");
+            }
+        }
     }
 }
