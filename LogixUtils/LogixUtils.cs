@@ -17,7 +17,7 @@ namespace LogixUtils
     {
         public override string Name => "LogixUtils";
         public override string Author => "badhaloninja";
-        public override string Version => "1.4.0";
+        public override string Version => "1.5.0";
         public override string Link => "https://github.com/badhaloninja/LogixUtils";
         public override void OnEngineInit()
         {
@@ -62,7 +62,7 @@ namespace LogixUtils
                 var code = new List<CodeInstruction>(instructions);
                 int insertionIndex = -1;
                 Label relayAddSlotLabel = il.DefineLabel();
-                
+
                 for (int i = 0; i < code.Count; i++) //Find where to inject code
                 {
                     if (code[i].opcode == OpCodes.Ldstr && (string)code[i].operand == "Relay" && code[i + 2].operand is MethodInfo) //Find relay string 2 instructions before a method
@@ -92,7 +92,7 @@ namespace LogixUtils
                 return code;
             }
         }
-        
+
 
         // Logix label tweak
         [HarmonyPatch(typeof(LogixHelper), "GetNodeName")]
@@ -112,7 +112,7 @@ namespace LogixUtils
             {
                 if (type.IsConstructedGenericType)
                 {
-                    string genericArguments = string.Join(",",type.GetGenericArguments().Select(GetFormattedName));
+                    string genericArguments = string.Join(",", type.GetGenericArguments().Select(GetFormattedName));
                     return $"{StringHelper.BeautifyName(type.Name.Substring(0, type.Name.IndexOf("`")))}<{genericArguments}>";
                 }
                 return StringHelper.BeautifyName(type.Name);
@@ -163,8 +163,8 @@ namespace LogixUtils
                 }
             }
         }
-        
-        
+
+
         // UI align item backwards or forwards
         [HarmonyPatch(typeof(UI_TargettingController), "AlignItem")]
         class UIAlign_Patch
@@ -203,7 +203,7 @@ namespace LogixUtils
                     if (register != null)
                     {
                         ____input.TryConnectTo(register);
-                        if (____input.TargetNode != null) 
+                        if (____input.TargetNode != null)
                         { // Offset new ref node
                             LogixNode refNode = ____input.TargetNode;
 
@@ -274,7 +274,7 @@ namespace LogixUtils
                 {
                     genericType
                 });
-                
+
                 return (LogixNode)CreateNewNodeSlot(logixTip, LogixHelper.GetNodeName(type)).AttachComponent(type);
             }
 
@@ -311,6 +311,21 @@ namespace LogixUtils
             public static IReferenceNode PrefixReferenceNode(Slot slot, IWorldElement target, Type targetType)
             {
                 throw new NotImplementedException("It's a stub");
+            }
+        }
+
+
+        // Make RefNode Texture Clamp
+        [HarmonyPatch(typeof(ReferenceNode), "PrefixReferenceNode")]
+        class ReferenceNodeTexture_Clamp
+        {
+            public static void Postfix(ref IReferenceNode __result)
+            {
+                if (__result == null) return;
+                __result.World.GetSharedComponentOrCreate("LogiX_RefNodeTexture", delegate (StaticTexture2D tex)
+                {
+                    tex.URL.Value = NeosAssets.Testing.Logix.Reference;
+                }).WrapMode = TextureWrapMode.Clamp;
             }
         }
     }
