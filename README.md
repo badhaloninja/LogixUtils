@@ -2,7 +2,7 @@
 
 A [NeosModLoader](https://github.com/zkxs/NeosModLoader) mod for [Neos VR](https://neos.com/) that tweaks some logix things
 
-All features are toggleable in the config
+All features are toggleable in the config, most are on by default
 
 ### Current features: 
  - Scales relays, drives, casts, and reference nodes relative to user
