@@ -14,7 +14,7 @@ namespace LogixUtils
         public override string Version => "1.5.0";
         public override string Link => "https://github.com/badhaloninja/LogixUtils";
 
-        private static ModConfiguration config;
+        internal static ModConfiguration config;
         private static Harmony harmony;
 
 
@@ -31,10 +31,18 @@ namespace LogixUtils
         [AutoRegisterConfigKey]
         private static readonly ModConfigurationKey<bool> ClampNodeTextures = new ModConfigurationKey<bool>("clampNodeTextures", "Clamp various node textures", () => true);
 
+
+        //
         [AutoRegisterConfigKey]
         public static readonly ModConfigurationKey<bool> AddInputNodes = new ModConfigurationKey<bool>("addInputNodes", "Add unused input nodes to input node list", () => true);
         [AutoRegisterConfigKey]
         public static readonly ModConfigurationKey<bool> AddOtherInputNodes = new ModConfigurationKey<bool>("addOtherInputNodes", "Also add other input nodes", () => true);
+
+        //
+        [AutoRegisterConfigKey]
+        public static readonly ModConfigurationKey<bool> RepairCrashedNodesContext = new ModConfigurationKey<bool>("repairCrashedNodesContext", "Add context menu item to attempt repairing crashed nodes", () => true);
+        [AutoRegisterConfigKey]
+        public static readonly ModConfigurationKey<bool> ReportCrashedNodeRepair = new ModConfigurationKey<bool>("reportCrashedNodeRepair", "Generate a report after attempting to repair crashed nodes", () => false);
 
 
         public static Dictionary<ModConfigurationKey<bool>, ToggleablePatch> TogglePatchList = new Dictionary<ModConfigurationKey<bool>, ToggleablePatch>() {
@@ -44,7 +52,8 @@ namespace LogixUtils
             { GenRegisterFromWrite, new RegisterFromWrite() },
             { ExtractRefOfAny, new ExtractRef() },
             { ClampNodeTextures, new ClampNodes() },
-            { AddInputNodes, new InputNodes() }
+            { AddInputNodes, new InputNodes() },
+            { RepairCrashedNodesContext, new TryRepairNodes() }
         };
 
         public override void OnEngineInit()

@@ -53,7 +53,7 @@ namespace LogixUtils
 
 
 
-        private static string GetFormattedName(Type type)
+        internal static string GetFormattedName(Type type)
         {
             if (type.IsConstructedGenericType)
             {

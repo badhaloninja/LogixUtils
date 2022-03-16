@@ -60,6 +60,7 @@
     <Compile Include="ToggleablePatch.cs" />
     <Compile Include="LogixUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TryRepairNodes.cs" />
     <Compile Include="UIAlignItemTweaks.cs" />
   </ItemGroup>
   <ItemGroup>
