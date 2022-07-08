@@ -11,7 +11,7 @@ namespace LogixUtils
     {
         public override string Name => "LogixUtils";
         public override string Author => "badhaloninja";
-        public override string Version => "1.5.0";
+        public override string Version => "1.5.1";
         public override string Link => "https://github.com/badhaloninja/LogixUtils";
 
         internal static ModConfiguration config;
