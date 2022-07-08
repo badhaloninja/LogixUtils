@@ -51,17 +51,17 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClampNodes.cs" />
-    <Compile Include="ExtractRef.cs" />
-    <Compile Include="FullTypeName.cs" />
-    <Compile Include="InputNodes.cs" />
-    <Compile Include="NodeScales.cs" />
-    <Compile Include="RegisterFromWrite.cs" />
+    <Compile Include="Patches\ClampNodes.cs" />
+    <Compile Include="Patches\ExtractRef.cs" />
+    <Compile Include="Patches\FullTypeName.cs" />
+    <Compile Include="Patches\InputNodes.cs" />
+    <Compile Include="Patches\NodeScales.cs" />
+    <Compile Include="Patches\RegisterFromWrite.cs" />
     <Compile Include="ToggleablePatch.cs" />
     <Compile Include="LogixUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TryRepairNodes.cs" />
-    <Compile Include="UIAlignItemTweaks.cs" />
+    <Compile Include="Patches\TryRepairNodes.cs" />
+    <Compile Include="Patches\UIAlignItemTweaks.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

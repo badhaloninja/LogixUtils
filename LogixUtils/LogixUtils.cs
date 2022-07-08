@@ -87,9 +87,11 @@ namespace LogixUtils
             if (TogglePatchList.TryGetValue(BoolKey, out ToggleablePatch patch)) {
                 if (value)
                 {
+                    Msg($"Patching: {patch.GetType().Name}");
                     patch.Patch(harmony, this);
                     return;
                 }
+                Msg($"Unpatching: {patch.GetType().Name}");
                 patch.Unpatch(harmony, this);
             }
         }
