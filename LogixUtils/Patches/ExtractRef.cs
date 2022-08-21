@@ -48,10 +48,10 @@ namespace LogixUtils
 
             // Why is this a thing??? On secondary if you are holding a slot ref named "LogiX_Pack" it will unpack that slot?
             if (heldSlotReference != null && heldSlotReference.Name == LogixHelper.LOGIX_PACK_NAME) return true;
+            if (referenceProxy == null) return true;
 
-
-            IWorldElement worldElement = (referenceProxy != null) ? referenceProxy.Reference.Target : null;
-            //if (worldElement as IField != null) return true; // Continue original behavior if it is a field
+            IWorldElement worldElement = referenceProxy.Reference.Target;
+            if (worldElement == null) return true;
 
             Slot nodeSlot = instance.LocalUserSpace.AddSlot("Reference Node");
 
