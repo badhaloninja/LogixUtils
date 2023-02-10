@@ -11,7 +11,7 @@ namespace LogixUtils
     {
         public override string Name => "LogixUtils";
         public override string Author => "badhaloninja";
-        public override string Version => "1.5.2";
+        public override string Version => "1.6.0";
         public override string Link => "https://github.com/badhaloninja/LogixUtils";
 
         internal static ModConfiguration config;
@@ -22,8 +22,7 @@ namespace LogixUtils
         private static readonly ModConfigurationKey<bool> NodeScaleFixesOption = new ModConfigurationKey<bool>("nodeScales", "Fix various nodes not scaling relative to user", () => true);
         [AutoRegisterConfigKey]
         private static readonly ModConfigurationKey<bool> ShowFullTypeLogixLabel = new ModConfigurationKey<bool>("fullTypeLogixLabel", "Make logix label display full type name", () => true);
-        [AutoRegisterConfigKey]
-        private static readonly ModConfigurationKey<bool> UIAlignItemsBackwards = new ModConfigurationKey<bool>("uiAlignItemsBackwards", "Allow aligning logix backwards", () => true);
+        
         [AutoRegisterConfigKey]
         private static readonly ModConfigurationKey<bool> GenRegisterFromWrite = new ModConfigurationKey<bool>("genRegisterFromWrite", "Allow spawning a Value/Reference register from a Write node target", () => true);
         [AutoRegisterConfigKey]
@@ -43,6 +42,22 @@ namespace LogixUtils
         public static readonly ModConfigurationKey<bool> RepairCrashedNodesContext = new ModConfigurationKey<bool>("repairCrashedNodesContext", "Add context menu item to attempt repairing crashed nodes", () => true);
         [AutoRegisterConfigKey]
         public static readonly ModConfigurationKey<bool> ReportCrashedNodeRepair = new ModConfigurationKey<bool>("reportCrashedNodeRepair", "Generate a report after attempting to repair crashed nodes", () => false);
+
+
+
+        [AutoRegisterConfigKey]
+        private static readonly ModConfigurationKey<bool> UIAlignItemsBackwards = new ModConfigurationKey<bool>("uiAlignItemsBackwards", "Enable UI Align tweaks", () => true);
+        //
+        [AutoRegisterConfigKey]
+        public static readonly ModConfigurationKey<bool> SnapToAngleOnAlign = new ModConfigurationKey<bool>("snapToAngleOnAlign", "Snap to angle when aligning, if disabled only flips forward and backward", () => true);
+        [AutoRegisterConfigKey]
+        public static readonly ModConfigurationKey<float> SnapAngle = new ModConfigurationKey<float>("alignSnapAngle", "Angle to snap to when aligning", () => 90f);
+
+        [AutoRegisterConfigKey]
+        public static readonly ModConfigurationKey<Key> AlignScaleModifierKey = new ModConfigurationKey<Key>("alignScaleModifierKey", "Key to be held to allow scaling on align", () => Key.Space);
+        [AutoRegisterConfigKey]
+        public static readonly ModConfigurationKey<bool> ModifiedScaleToUserScale = new ModConfigurationKey<bool>("modifiedScaleToUserScale", "Scale to user scale when aligning scale instead of global 1", () => false);
+
 
 
         public static Dictionary<ModConfigurationKey<bool>, ToggleablePatch> TogglePatchList = new Dictionary<ModConfigurationKey<bool>, ToggleablePatch>() {
