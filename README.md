@@ -12,7 +12,7 @@ All features are toggleable in the config, most are on by default
  - Allows spawning a Value/Reference register from a Write node target
  - Sets various logix node textures to clamp
  - Adds a repair crashed nodes context menu item to the logix tip when holding a slot with crashed nodes under it
- - Allows spawning Logix node at the same rotation as the user
+ - Allows spawning Logix node at the same rotation as the user when in VR
  - Allows the deactivation of the Link wire from Logix Interfaces to their target
 
 ## Installation
