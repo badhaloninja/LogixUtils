@@ -17,37 +17,38 @@ namespace LogixUtils
         internal static ModConfiguration config;
         private static Harmony harmony;
 
-
+        // Fix Scales
         [AutoRegisterConfigKey]
         private static readonly ModConfigurationKey<bool> NodeScaleFixesOption = new ModConfigurationKey<bool>("nodeScales", "Fix various nodes not scaling relative to user", () => true);
+        // Full Node Type Name
         [AutoRegisterConfigKey]
         private static readonly ModConfigurationKey<bool> ShowFullTypeLogixLabel = new ModConfigurationKey<bool>("fullTypeLogixLabel", "Make logix label display full type name", () => true);
-        
+        // Generate Register from write 
         [AutoRegisterConfigKey]
         private static readonly ModConfigurationKey<bool> GenRegisterFromWrite = new ModConfigurationKey<bool>("genRegisterFromWrite", "Allow spawning a Value/Reference register from a Write node target", () => true);
+        // Extract Register
         [AutoRegisterConfigKey]
         private static readonly ModConfigurationKey<bool> ExtractRefOfAny = new ModConfigurationKey<bool>("extractRefOfAny", "Make 'Extract Ref Node' allow any refrence instead of only IField", () => true);
+        // Clamp
         [AutoRegisterConfigKey]
         private static readonly ModConfigurationKey<bool> ClampNodeTextures = new ModConfigurationKey<bool>("clampNodeTextures", "Clamp various node textures", () => true);
 
-
-        //
+        // Input Nodes
         [AutoRegisterConfigKey]
         public static readonly ModConfigurationKey<bool> AddInputNodes = new ModConfigurationKey<bool>("addInputNodes", "Add unused input nodes to input node list", () => true);
         [AutoRegisterConfigKey]
         public static readonly ModConfigurationKey<bool> AddOtherInputNodes = new ModConfigurationKey<bool>("addOtherInputNodes", "Also add other input nodes", () => true);
 
-        //
+        // Repair nodes
         [AutoRegisterConfigKey]
         public static readonly ModConfigurationKey<bool> RepairCrashedNodesContext = new ModConfigurationKey<bool>("repairCrashedNodesContext", "Add context menu item to attempt repairing crashed nodes", () => true);
         [AutoRegisterConfigKey]
         public static readonly ModConfigurationKey<bool> ReportCrashedNodeRepair = new ModConfigurationKey<bool>("reportCrashedNodeRepair", "Generate a report after attempting to repair crashed nodes", () => false);
 
-
-
+        // UI Align
         [AutoRegisterConfigKey]
         private static readonly ModConfigurationKey<bool> UIAlignItemsBackwards = new ModConfigurationKey<bool>("uiAlignItemsBackwards", "Enable UI Align tweaks", () => true);
-        //
+        
         [AutoRegisterConfigKey]
         public static readonly ModConfigurationKey<bool> SnapToAngleOnAlign = new ModConfigurationKey<bool>("snapToAngleOnAlign", "Snap to angle when aligning, if disabled only flips forward and backward", () => true);
         [AutoRegisterConfigKey]

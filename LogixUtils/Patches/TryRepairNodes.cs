@@ -31,9 +31,7 @@ namespace LogixUtils
             Slot root = LogixUtils.ReversePatches.GetHeldSlotReference(__instance, out ReferenceProxy referenceProxy);
             if (root == null || root.GetComponentsInChildren((LogixNode node) => !node.Enabled).Count == 0) return;
 
-            Uri crashedNode = new Uri("neosdb:///02827db59f17478cf989609a957199806c03c8237777177939b6ac50640e2883.png");
-
-            var item = menu.AddItem("Try Repair Nodes", crashedNode, color.Red);
+            var item = menu.AddItem("Try Repair Nodes", Assets.Images.CrashedNode, color.Red);
             item.Button.LocalPressed += 
                 (btn, btnEv) => {
                     repairNodesUnderRoot(root);

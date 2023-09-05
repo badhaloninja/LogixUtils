@@ -56,7 +56,8 @@ namespace LogixUtils
         private static Dictionary<Type, Type> newUtilInputs = new Dictionary<Type, Type>() {
               { typeof(DateTime), typeof(FrooxEngine.LogiX.Input.UtcNowNode) },
               { typeof(User), typeof(FrooxEngine.LogiX.WorldModel.LocalUser) },
-              { typeof(Slot), typeof(FrooxEngine.LogiX.WorldModel.LocalUserSpace) }
+              { typeof(Slot), typeof(FrooxEngine.LogiX.WorldModel.LocalUserSpace) },
+              { typeof(UserRoot), typeof(FrooxEngine.LogiX.WorldModel.LocalUserRoot) },
             };
     }
 }
