@@ -28,24 +28,22 @@ namespace LogixUtils
 
         public static void wireBeGonePatch(Slot __result)
         {
-            Slot toggleRoot = __result[0]?.Find("WireToggle");
+            Slot toggleRoot = __result[0]?.FindInChildren("WireToggle");
             if (toggleRoot != null) return;
 
             var wire = __result.GetComponentInChildren<ConnectionWire>(c => c.Slot.Name.Equals("LinkPoint"));
             if (wire == null) return;
 
-
             UIBuilder ui = new UIBuilder(wire.Slot.Parent);
-
 
             var toggleButton = ui.Button("");
             toggleButton.Slot.Name = "WireToggle";
-            toggleButton.RectTransform.OffsetMax.Value = new BaseX.float2(-122, 0);
+            toggleButton.RectTransform.OffsetMax.Value = new BaseX.float2(-112, 0);
             
             toggleButton.LabelTextField.DriveFromBool(wire.Slot.ActiveSelf_Field, "⦿", "◌");
             toggleButton.Slot.AttachComponent<ButtonToggle>().TargetValue.TrySet(wire.Slot.ActiveSelf_Field);
-            wire.Slot.ActiveSelf_Field.GetUserOverride(true).Default.Value = false;
 
+            wire.Slot.ActiveSelf_Field.GetUserOverride(true).Default.Value = false;
             wire.Slot.Parent = toggleButton.Slot;
         }
     }
