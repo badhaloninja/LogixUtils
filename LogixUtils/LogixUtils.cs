@@ -59,10 +59,10 @@ namespace LogixUtils
         public static readonly ModConfigurationKey<bool> ModifiedScaleToUserScale = new ModConfigurationKey<bool>("modifiedScaleToUserScale", "Scale to user scale when aligning scale instead of global 1", () => false);
         
         [AutoRegisterConfigKey]
-        public static readonly ModConfigurationKey<bool> AlignNodeRotationToUserVr = new ModConfigurationKey<bool>("alignNodeRotationToUserVr", "Aligns the spawned node to be same rotation as user while in VR", () => true);
+        public static readonly ModConfigurationKey<bool> AlignNodeRotationToUserVr = new ModConfigurationKey<bool>("alignNodeRotationToUserVr", "Aligns the spawned nodes to the user's up", () => true);
 
         [AutoRegisterConfigKey]
-        public static readonly ModConfigurationKey<bool> RemoveWireToTargetSlot = new ModConfigurationKey<bool>("RemoveWireToTargetSlot", "De-activates the wire connecting a LogiX Interface to its target", () => true);
+        public static readonly ModConfigurationKey<bool> AddWireToggleButton = new ModConfigurationKey<bool>("addWireToggleButton", "Adds a button to interfaces that toggles the wire, the wire is defaulted to off", () => true);
 
 
 
@@ -76,7 +76,7 @@ namespace LogixUtils
             { AddInputNodes, new InputNodes() },
             { RepairCrashedNodesContext, new TryRepairNodes() },
             { AlignNodeRotationToUserVr, new VrSpawnFix() },
-            { RemoveWireToTargetSlot, new WireBeGone() }
+            { AddWireToggleButton, new WireBeGone() }
         };
 
         public override void OnEngineInit()
