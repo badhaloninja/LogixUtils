@@ -7,11 +7,13 @@ All features are toggleable in the config, most are on by default
 ### Current features: 
  - Scales relays, drives, casts, and reference nodes relative to user
  - Updates `LogixHelper.GetNodeName` to display generic type names nicer
- - Allows aligning logix to snapped angles with the UI_TargettingController
- - Changes Extract Ref Node to allow any refrence instead of only IField
+ - Allows aligning logix to snapped angles with the UI_TargetingController
+ - Changes Extract Ref Node to allow any reference instead of only IField
  - Allows spawning a Value/Reference register from a Write node target
  - Sets various logix node textures to clamp
- - Adds a repair crashed nodes contex menu item to the logix tip when holding a slot with crashed nodes under it
+ - Adds a repair crashed nodes context menu item to the logix tip when holding a slot with crashed nodes under it
+ - Allows spawning Logix node at the same rotation as the user when in VR
+ - Allows the deactivation of the Link wire from Logix Interfaces to their target
 
 ## Installation
 1. Install [NeosModLoader](https://github.com/zkxs/NeosModLoader).
