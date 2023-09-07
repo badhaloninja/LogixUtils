@@ -91,7 +91,9 @@ namespace LogixUtils
             foreach(var patch in TogglePatchList)
             {
                 patch.Value.Initialize(harmony, this, config);
+
                 config.OnThisConfigurationChanged += patch.Value.OnThisConfigurationChanged;
+
                 if (!config.GetValue(patch.Key)) continue;
                 patch.Value.Patch(harmony, this);
             }
@@ -106,16 +108,16 @@ namespace LogixUtils
         {
             var BoolKey = configurationChangedEvent.Key as ModConfigurationKey<bool>;
 
-            if (!config.TryGetValue(BoolKey, out bool value)) return;
+            if (!config.TryGetValue(BoolKey, out bool patchEnabled)) return;
 
             if (TogglePatchList.TryGetValue(BoolKey, out ToggleablePatch patch)) {
-                if (value)
+                if (patchEnabled)
                 {
-                    Msg($"Patching: {patch.GetType().Name}");
+                    Msg($"Patch \"{patch.GetType().Name}\" enabled");
                     patch.Patch(harmony, this);
                     return;
                 }
-                Msg($"Unpatching: {patch.GetType().Name}");
+                Msg($"Patch \"{patch.GetType().Name}\" disabled");
                 patch.Unpatch(harmony, this);
             }
         }
@@ -134,38 +136,25 @@ namespace LogixUtils
         [HarmonyPatch]
         public static class ReversePatches
         {
-            // Reflections go brrrrrr
-            [HarmonyReversePatch]
-            [HarmonyPatch(typeof(LogixTip), "GetHeldSlotReference")]
-            public static Slot GetHeldSlotReference(LogixTip instance, out ReferenceProxy referenceProxy)
-            {
-                throw new NotImplementedException("It's a stub");
-            }
-
             [HarmonyReversePatch]
             [HarmonyPatch(typeof(LogixTip), "PositionSpawnedNode")]
-            public static void PositionSpawnedNode(LogixTip instance, Slot node)
-            {
-                throw new NotImplementedException("It's a stub");
-            }
-            [HarmonyReversePatch]
-            [HarmonyPatch(typeof(LogixTip), "AttachOutput")]
-            public static Slot AttachOutput(LogixTip instance, IWorldElement output)
-            {
-                throw new NotImplementedException("It's a stub");
-            }
-            [HarmonyReversePatch]
-            [HarmonyPatch(typeof(ReferenceNode), "PrefixReferenceNode")]
-            public static IReferenceNode PrefixReferenceNode(Slot slot, IWorldElement target, Type targetType)
-            {
-                throw new NotImplementedException("It's a stub");
-            }
+            public static void PositionSpawnedNode(LogixTip instance, Slot node) => throw new NotImplementedException("It's a stub");
+
             [HarmonyReversePatch]
             [HarmonyPatch(typeof(LogixTip), "CreateNewNodeSlot")]
-            public static Slot CreateNewNodeSlot(LogixTip instance, string name)
-            {
-                throw new NotImplementedException("It's a stub");
-            }
+            public static Slot CreateNewNodeSlot(LogixTip instance, string name) => throw new NotImplementedException("It's a stub");
+
+            [HarmonyReversePatch]
+            [HarmonyPatch(typeof(LogixTip), "AttachOutput")]
+            public static Slot AttachOutput(LogixTip instance, IWorldElement output) => throw new NotImplementedException("It's a stub");
+
+            [HarmonyReversePatch]
+            [HarmonyPatch(typeof(LogixTip), "GetHeldSlotReference")]
+            public static Slot GetHeldSlotReference(LogixTip instance, out ReferenceProxy referenceProxy) => throw new NotImplementedException("It's a stub");
+
+            [HarmonyReversePatch]
+            [HarmonyPatch(typeof(ReferenceNode), "PrefixReferenceNode")]
+            public static IReferenceNode PrefixReferenceNode(Slot slot, IWorldElement target, Type targetType) => throw new NotImplementedException("It's a stub");
         }
     }
 }
