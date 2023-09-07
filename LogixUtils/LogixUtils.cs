@@ -11,7 +11,7 @@ namespace LogixUtils
     {
         public override string Name => "LogixUtils";
         public override string Author => "badhaloninja";
-        public override string Version => "1.6.0";
+        public override string Version => "1.7.0";
         public override string Link => "https://github.com/badhaloninja/LogixUtils";
 
         internal static ModConfiguration config;
@@ -58,6 +58,12 @@ namespace LogixUtils
         public static readonly ModConfigurationKey<Key> AlignScaleModifierKey = new ModConfigurationKey<Key>("alignScaleModifierKey", "Key to be held to allow scaling on align", () => Key.Space);
         [AutoRegisterConfigKey]
         public static readonly ModConfigurationKey<bool> ModifiedScaleToUserScale = new ModConfigurationKey<bool>("modifiedScaleToUserScale", "Scale to user scale when aligning scale instead of global 1", () => false);
+        
+        [AutoRegisterConfigKey]
+        public static readonly ModConfigurationKey<bool> AlignNodeRotationToUserVr = new ModConfigurationKey<bool>("alignNodeRotationToUserVr", "Aligns the spawned nodes to the user's up", () => true);
+
+        [AutoRegisterConfigKey]
+        public static readonly ModConfigurationKey<bool> AddWireToggleButton = new ModConfigurationKey<bool>("addWireToggleButton", "Adds a button to interfaces that toggles the wire, the wire is defaulted to off", () => true);
 
 
 
@@ -69,7 +75,9 @@ namespace LogixUtils
             { ExtractRefOfAny, new ExtractRef() },
             { ClampNodeTextures, new ClampNodes() },
             { AddInputNodes, new InputNodes() },
-            { RepairCrashedNodesContext, new TryRepairNodes() }
+            { RepairCrashedNodesContext, new TryRepairNodes() },
+            { AlignNodeRotationToUserVr, new VrSpawnFix() },
+            { AddWireToggleButton, new WireBeGone() }
         };
 
         public override void OnEngineInit()
